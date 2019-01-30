@@ -77,5 +77,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onResume() {
         super.onResume();
         //test
+        //PULL master success
     }
 }
