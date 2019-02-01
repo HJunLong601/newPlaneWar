@@ -22,6 +22,7 @@ public class MyPlane extends GameObject {
 
     private boolean isInitial = false;
     private boolean isExplosion;
+    private boolean playDieSound = false;
 
     private ArrayList<Bitmap> explodes;
 
@@ -147,9 +148,22 @@ public class MyPlane extends GameObject {
         isInitial = initial;
     }
 
+    public boolean isExplosion() {
+        return isExplosion;
+    }
+    public void setExplosion(boolean explosion) {
+        isExplosion = explosion;
+    }
+
     public void setExplodes(ArrayList<Bitmap> explodes) {
         this.explodes = explodes;
     }
 
 
+    public boolean isPlayDieSound() {
+        return playDieSound;
+    }
+    public void setPlayDieSound(boolean playDieSound) {
+        this.playDieSound = playDieSound;
+    }
 }

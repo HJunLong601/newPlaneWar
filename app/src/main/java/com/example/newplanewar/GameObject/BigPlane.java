@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 
 import com.example.newplanewar.R;
+import com.example.newplanewar.sounds.GameSoundPool;
 
 import java.util.Random;
 
@@ -70,6 +71,11 @@ public class BigPlane extends EnemyPlane {
 
             }else {
                 int y = currentFrame * height;
+                if (!isPlayDieSound){
+                    soundPool.playSound(GameSoundPool.SOUND_EXP3,0);
+                    task.addScore(40);
+                    isPlayDieSound = true;
+                }
                 if (currentFrame < 5){
                     canvas.save();
                     canvas.clipRect(object_x,object_y,object_x + width,object_y + height);

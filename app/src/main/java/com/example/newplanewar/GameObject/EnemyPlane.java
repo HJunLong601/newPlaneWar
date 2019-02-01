@@ -5,6 +5,9 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.util.Log;
 
+import com.example.newplanewar.TaskSystem.Task;
+import com.example.newplanewar.sounds.GameSoundPool;
+
 import java.util.ArrayList;
 
 public class EnemyPlane extends GameObject {
@@ -14,6 +17,9 @@ public class EnemyPlane extends GameObject {
     protected boolean isInitial = false;
     protected int blood;   //当前血量
     protected int bloodVolume; // 总血量
+    protected Task task;
+    protected GameSoundPool soundPool;
+    protected boolean isPlayDieSound = false;
     public ArrayList<EnemyPlane> objectList;
 
 
@@ -21,6 +27,7 @@ public class EnemyPlane extends GameObject {
     public EnemyPlane(Resources resources) {
         super(resources);
         currentFrame = 0;
+        task = Task.getInstance();
     }
 
     @Override
@@ -104,4 +111,7 @@ public class EnemyPlane extends GameObject {
         this.objectList = objectList;
     }
 
+    public void setSoundPool(GameSoundPool soundPool) {
+        this.soundPool = soundPool;
+    }
 }

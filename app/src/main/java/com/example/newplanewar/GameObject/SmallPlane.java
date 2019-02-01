@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.example.newplanewar.R;
 import com.example.newplanewar.Util.BitmapUtil;
+import com.example.newplanewar.sounds.GameSoundPool;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -79,6 +80,12 @@ public class SmallPlane extends EnemyPlane {
 
             }else {
                 int y = currentFrame * height;
+                if (!isPlayDieSound){
+                    soundPool.playSound(GameSoundPool.SOUND_EXP,0);
+                    task.addScore(10);
+                    isPlayDieSound = true;
+                }
+
                 if (currentFrame < 3){
                     canvas.save();
                     canvas.clipRect(object_x,object_y,object_x + width,object_y + height);

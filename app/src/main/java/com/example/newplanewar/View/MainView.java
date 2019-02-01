@@ -26,6 +26,7 @@ import com.example.newplanewar.MainActivity;
 import com.example.newplanewar.R;
 import com.example.newplanewar.TaskSystem.Task;
 import com.example.newplanewar.Util.BitmapUtil;
+import com.example.newplanewar.sounds.GameSoundPool;
 
 import java.util.ArrayList;
 
@@ -52,7 +53,7 @@ public class MainView extends BaseView {
     private final int GameFrame = 30;  //帧率锁定 30
     private int GenerateCurrentCount;
 
-
+    private GameSoundPool soundPool;
 
     private boolean isStopDraw = false; //是否暂停绘制
     private boolean isGameOver = false; //是否被击中
@@ -71,6 +72,7 @@ public class MainView extends BaseView {
         gameActivity = (GameActivity) context;
 
         factory = GameObjectFactory.getInstance();
+        soundPool = new GameSoundPool(gameActivity);
         task = Task.getInstance();
         enemyList = new ArrayList<>();
         bullets = new ArrayList<>();
@@ -84,7 +86,7 @@ public class MainView extends BaseView {
     public void initObject(){
 
         //初始化飞机对象
-        for (GameObject object : enemyList){
+        for (EnemyPlane object : enemyList){
 
             if (object.isAlive()){
 
@@ -92,24 +94,25 @@ public class MainView extends BaseView {
                 if (object instanceof SmallPlane && object.isAlive()){
                     object.setScreenWH(screen_width,screen_height);
                     object.initial(task.getSmlSpeed(),200,0);  // speed blood null
-                    ((SmallPlane) object).setObjectList(enemyList);
+                    object.setObjectList(enemyList);
 //                    Log.i(TAG,"small speed is :"+task.getSmlSpeed());
                 }
                 //初始化中型机
                 if (object instanceof MidPlane && object.isAlive()){
                     object.setScreenWH(screen_width,screen_height);
                     object.initial(task.getMidSpeed(),500,0); // speed blood null
-                    ((MidPlane) object).setObjectList(enemyList);
+                    object.setObjectList(enemyList);
 //                    Log.i(TAG,"Mid speed is :"+task.getMidSpeed());
                 }
                 //初始化大型机
                 if (object instanceof BigPlane && object.isAlive()){
                     object.setScreenWH(screen_width,screen_height);
                     object.initial(task.getBigSpeed(),800,0);// speed blood null
-                    ((BigPlane) object).setObjectList(enemyList);
+                    object.setObjectList(enemyList);
 //                     Log.i(TAG,"Big speed is :"+task.getBigSpeed());
                 }
 
+                object.setSoundPool(soundPool);
             }
 
         }
@@ -121,6 +124,7 @@ public class MainView extends BaseView {
                 object.initial(myPlane.getMiddle_x(),myPlane.getMiddle_y(),50);
                // Log.i(TAG,"y is " + myPlane.getMiddle_y());
                 object.setObjectList(bullets);
+
             }
 
         }
@@ -132,12 +136,7 @@ public class MainView extends BaseView {
             myPlane.setExplodes(myPlaneExp);
         }
 
-
-
     }
-
-
-
 
 
     public void GenerateObject(){
@@ -160,6 +159,7 @@ public class MainView extends BaseView {
         if (GenerateCurrentCount % Bullet.GeneratedNum == 0 && isTouchPlane && myPlane.isAlive()){
             //Log.i("GameView","Generate Bullet");
             bullets.add((Bullet) factory.createBullet(getResources()));
+            soundPool.playSound(GameSoundPool.SOUND_SHOOT,0);
         }
 
         if (GenerateCurrentCount >= 20000000){
@@ -211,14 +211,6 @@ public class MainView extends BaseView {
                         if (object.isCollide(bullet)){ // 是否击中
                             bullet.setAlive(false);
 
-                            if (object instanceof SmallPlane){
-                                task.addScore(10);
-                            }else if (object instanceof MidPlane){
-                                task.addScore(20);
-                            }else if (object instanceof BigPlane){
-                                task.addScore(50);
-                            }
-
                         }
                     }
                 }
@@ -238,6 +230,12 @@ public class MainView extends BaseView {
                 }
             }
             myPlane.drawSelf(cacheCanvas);
+
+            if (myPlane.isExplosion() && !myPlane.isPlayDieSound()){
+                soundPool.playSound(GameSoundPool.SOUND_BIG_EXP,0);
+                myPlane.setPlayDieSound(true);
+            }
+
         }
 
         //画子弹
@@ -391,7 +389,7 @@ public class MainView extends BaseView {
                 }else if (event.getX()> 100+140 &&
                         event.getY() > screen_height/3 + 290 + 145 &&
                         event.getX() < 100 + 880 - 170 &&
-                        event.getY() < screen_height/3 + 580 - 30)
+                        event.getY() < screen_height/3 + 580 - 10)
                 {  //点击了提交分数
                     ContentValues values = new ContentValues();
                     values.put("grade", task.getGrade());
@@ -428,6 +426,7 @@ public class MainView extends BaseView {
     public void surfaceCreated(SurfaceHolder holder) {
         super.surfaceCreated(holder);
 
+        soundPool.initGameSound();
         initBitmap();
 
         if (thread != null && thread.isAlive()){

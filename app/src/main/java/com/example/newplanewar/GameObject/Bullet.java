@@ -15,7 +15,7 @@ public class Bullet extends GameObject {
     private Bitmap bullet;
     private boolean isInitial = false;
     private ArrayList<Bullet> objectList;
-    public static final int GeneratedNum = 10; //生产速度比
+    public static final int GeneratedNum = 5; //生产速度比
 
 
 
@@ -31,7 +31,7 @@ public class Bullet extends GameObject {
             bullet.recycle();
         }
         objectList.remove(this); //移出列表
-        Log.i("Bullet","releasereleasereleasereleasereleasereleasereleasereleaserelease");
+        //Log.i("Bullet","releasereleasereleasereleasereleasereleasereleasereleaserelease");
     }
 
     @Override

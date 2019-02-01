@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 
 import com.example.newplanewar.R;
+import com.example.newplanewar.sounds.GameSoundPool;
 
 import java.util.Random;
 
@@ -71,6 +72,11 @@ public class MidPlane extends EnemyPlane {
 
             }else {
                 int y = currentFrame * height;
+                if (!isPlayDieSound){
+                    soundPool.playSound(GameSoundPool.SOUND_EXP2,0);
+                    task.addScore(20);
+                    isPlayDieSound = true;
+                }
                 if (currentFrame < 4){
                     canvas.save();
                     canvas.clipRect(object_x,object_y,object_x + width,object_y + height);
